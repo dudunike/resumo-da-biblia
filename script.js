@@ -51,11 +51,69 @@ const categories = [
 
 const bannerImg = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&q=80&w=2070";
 
-function init() {
+// Supabase Config
+const supabaseUrl = 'https://knufkvvxbwptoxxlnwpg.supabase.co';
+const supabaseKey = 'sb_publishable_5H-yd3hlXulNY79T285DQw_dcHrnrAJ';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+async function checkAuth() {
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    const loginContainer = document.getElementById('login-container');
+    const appContent = document.getElementById('app-content');
+    const logoutBtn = document.getElementById('logout-btn');
+    
+    if (session) {
+        loginContainer.style.display = 'none';
+        appContent.style.display = 'block';
+        logoutBtn.style.display = 'inline-block';
+        initLibrary();
+    } else {
+        loginContainer.style.display = 'flex';
+        appContent.style.display = 'none';
+        logoutBtn.style.display = 'none';
+    }
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const errorMsg = document.getElementById('login-error');
+    
+    const btn = e.target.querySelector('button');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+    btn.disabled = true;
+    errorMsg.style.display = 'none';
+    
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+    });
+    
+    btn.innerHTML = 'Acessar';
+    btn.disabled = false;
+    
+    if (error) {
+        errorMsg.textContent = "E-mail ou senha inválidos. Verifique se a compra foi aprovada.";
+        errorMsg.style.display = 'block';
+    } else {
+        checkAuth();
+    }
+}
+
+async function logout() {
+    await supabase.auth.signOut();
+    checkAuth();
+}
+
+function initLibrary() {
+    // Only init if rows are empty to avoid duplicating on login/logout cycle
+    const container = document.getElementById('rows-container');
+    if (container.innerHTML.trim() !== '') return;
+    
     const hero = document.getElementById('hero-banner');
     hero.style.backgroundImage = `url('${bannerImg}')`;
-    
-    const container = document.getElementById('rows-container');
     
     const categoryImages = [
         'images/destaques.png',
@@ -103,6 +161,7 @@ function init() {
         }
     });
 }
+
 
 const modal = document.getElementById('previewModal');
 const modalBody = document.getElementById('modal-body');
@@ -192,4 +251,8 @@ window.onclick = (event) => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuth();
+    document.getElementById('login-form').addEventListener('submit', handleLogin);
+});
+

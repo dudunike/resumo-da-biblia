@@ -15,9 +15,22 @@
 
     <nav class="navbar" id="navbar">
         <div class="logo">BÍBLIA EXPLICADA</div>
-        <!-- Potential navigation links could go here -->
+        <button id="logout-btn" class="btn btn-gray" style="display: none; padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="logout()">Sair</button>
     </nav>
 
+    <div id="login-container" class="login-wrapper">
+        <div class="login-box">
+            <h2 style="color: white; margin-bottom: 2rem; text-align: center;">Entrar na Biblioteca</h2>
+            <form id="login-form">
+                <input type="email" id="login-email" placeholder="Seu e-mail da compra" required class="login-input">
+                <input type="password" id="login-password" placeholder="Senha" required class="login-input">
+                <button type="submit" class="btn btn-white" style="width: 100%; justify-content: center; margin-top: 1rem;">Acessar</button>
+            </form>
+            <p id="login-error" style="color: var(--netflix-red); margin-top: 1rem; text-align: center; display: none;"></p>
+        </div>
+    </div>
+
+    <div id="app-content" style="display: none;">
     <header class="hero" id="hero-banner">
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -54,6 +67,8 @@
         <p style="margin-top: 1rem; opacity: 0.5;">Os PDFs são de uso educacional e espiritual.</p>
     </footer>
 
+    </div> <!-- end app-content -->
+
     <!-- Simple Preview Modal -->
     <div id="previewModal" class="modal">
         <span class="close" id="closeModal">&times;</span>
@@ -64,6 +79,8 @@
         </div>
     </div>
 
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
 </body>
 </html>
