@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+drive_body.html
+drive_body_chrome.html
+drive_page.txt
+drive_screenshot.png
+scrape_debug.js
+scrape_real.js
+scrape.js
+download_thumbnails.js
+package-lock.json

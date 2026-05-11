@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bíblia Flix - Sua Biblioteca Digital</title>
+    <meta name="description" content="Explore estudos bíblicos versículo por versículo em uma experiência cinematográfica.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="logo">BÍBLIA EXPLICADA</div>
+        <!-- Potential navigation links could go here -->
+    </nav>
+
+    <header class="hero" id="hero-banner">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-tag">
+                <i class="fas fa-crown"></i>
+                RECOMENDADO PARA VOCÊ
+            </div>
+            <h1 class="hero-title" id="featured-title">Resumo da Bíblia</h1>
+            <p class="hero-description" id="featured-description">
+                Uma visão panorâmica e detalhada de toda a Palavra de Deus, de Gênesis a Apocalipse. Perfeito para quem busca um entendimento profundo e rápido.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn btn-white" onclick="openFeatured()">
+                    <i class="fas fa-play"></i> Ver Detalhes
+                </button>
+                <button class="btn btn-gray" onclick="downloadFeatured()">
+                    <i class="fas fa-download"></i> Baixar Agora
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="rows-container">
+        <!-- JS will populate rows here -->
+    </main>
+
+    <footer>
+        <div class="social-links">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-youtube"></i>
+        </div>
+        <p>&copy; 2024 Bíblia Explicada - Ministério Igreja. Todos os direitos reservados.</p>
+        <p style="margin-top: 1rem; opacity: 0.5;">Os PDFs são de uso educacional e espiritual.</p>
+    </footer>
+
+    <!-- Simple Preview Modal -->
+    <div id="previewModal" class="modal">
+        <span class="close" id="closeModal">&times;</span>
+        <div class="modal-content">
+            <div id="modal-body" style="padding: 2rem; color: white;">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
