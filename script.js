@@ -114,23 +114,55 @@ function openModal(title, desc, fileId) {
     let downloadLink = defaultDriveLink;
     
     if (fileId && fileId.trim() !== '') {
-        viewLink = `https://drive.google.com/file/d/${fileId}/view?usp=sharing`;
+        viewLink = `https://drive.google.com/file/d/${fileId}/preview`;
         downloadLink = `https://drive.google.com/uc?export=download&id=${fileId}`;
     }
     
     modalBody.innerHTML = `
-        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">${title}</h2>
-        <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #ccc;">${desc}</p>
-        <div style="display: flex; gap: 1rem;">
-            <button class="btn btn-white" onclick="window.open('${viewLink}', '_blank')">
-                <i class="fas fa-eye"></i> Acessar Arquivo
-            </button>
-            <button class="btn btn-gray" onclick="window.open('${downloadLink}', '_blank')">
-                <i class="fas fa-download"></i> Baixar PDF
-            </button>
+        <div id="modal-info">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">${title}</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #ccc;">${desc}</p>
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+                <button class="btn btn-white" onclick="showPDF('${viewLink}')">
+                    <i class="fas fa-eye"></i> Acessar Arquivo
+                </button>
+                <button class="btn btn-gray" onclick="window.open('${downloadLink}', '_blank')">
+                    <i class="fas fa-download"></i> Baixar PDF
+                </button>
+            </div>
+        </div>
+        <div id="pdf-viewer-container" style="display: none; width: 100%; height: 600px; border-radius: 8px; overflow: hidden; background: #000;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #222;">
+                <span style="font-weight: bold; color: white;">Visualizando: ${title}</span>
+                <button class="btn btn-gray" style="padding: 5px 15px; font-size: 0.9rem;" onclick="hidePDF()">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </button>
+            </div>
+            <iframe src="" id="pdf-viewer" width="100%" height="100%" frameborder="0" allow="autoplay"></iframe>
         </div>
     `;
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // Prevent scrolling background
+}
+
+function showPDF(url) {
+    const info = document.getElementById('modal-info');
+    const container = document.getElementById('pdf-viewer-container');
+    const iframe = document.getElementById('pdf-viewer');
+    
+    info.style.display = 'none';
+    container.style.display = 'block';
+    iframe.src = url;
+}
+
+function hidePDF() {
+    const info = document.getElementById('modal-info');
+    const container = document.getElementById('pdf-viewer-container');
+    const iframe = document.getElementById('pdf-viewer');
+    
+    info.style.display = 'block';
+    container.style.display = 'none';
+    iframe.src = '';
 }
 
 function openFeatured() {
@@ -144,9 +176,20 @@ function downloadFeatured() {
     window.open(`https://drive.google.com/uc?export=download&id=${resumoFileId}`, '_blank');
 }
 
-closeBtn.onclick = () => modal.style.display = 'none';
+closeBtn.onclick = () => {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    const iframe = document.getElementById('pdf-viewer');
+    if (iframe) iframe.src = '';
+};
+
 window.onclick = (event) => {
-    if (event.target == modal) modal.style.display = 'none';
+    if (event.target == modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        const iframe = document.getElementById('pdf-viewer');
+        if (iframe) iframe.src = '';
+    }
 };
 
 document.addEventListener('DOMContentLoaded', init);
