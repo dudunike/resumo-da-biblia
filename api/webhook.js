@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       // Create user with default password 'mudi123'
       const { data, error } = await supabase.auth.admin.createUser({
         email: email,
-        password: 'mudi123',
+        password: 'mude123',
         email_confirm: true
       })
 
