@@ -54,17 +54,17 @@ const bannerImg = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?
 // Supabase Config
 const supabaseUrl = 'https://knufkvvxbwptoxxlnwpg.supabase.co';
 const supabaseKey = 'sb_publishable_5H-yd3hlXulNY79T285DQw_dcHrnrAJ';
-let supabase;
+let supabaseClient;
 
 function getSupabase() {
-    if (!supabase) {
+    if (!supabaseClient) {
         if (window.supabase) {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
         } else {
             console.error('Supabase library not loaded yet');
         }
     }
-    return supabase;
+    return supabaseClient;
 }
 
 async function checkAuth() {
@@ -92,27 +92,42 @@ async function checkAuth() {
     }
 }
 
+
 async function handleLogin(e) {
+    console.log('Login attempt started');
     if (e) e.preventDefault();
     
     const client = getSupabase();
     if (!client) {
+        console.error('Supabase client not initialized');
         alert('O sistema ainda está carregando. Por favor, aguarde um segundo.');
         return;
     }
 
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
+    const emailInput = document.getElementById('login-email');
+    const passwordInput = document.getElementById('login-password');
     const errorMsg = document.getElementById('login-error');
-    const loginForm = document.getElementById('login-form');
     
-    const btn = loginForm.querySelector('button');
-    const originalBtnText = btn.innerHTML;
+    if (!emailInput || !passwordInput) {
+        console.error('Email or password inputs not found');
+        return;
+    }
+
+    const email = emailInput.value;
+    const password = passwordInput.value;
     
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-    btn.disabled = true;
-    errorMsg.style.display = 'none';
+    // Find the button - either through the form or by tag
+    let btn = document.querySelector('.login-box .btn-white');
+    const originalBtnText = btn ? btn.innerHTML : 'Acessar';
     
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+        btn.disabled = true;
+    }
+    
+    if (errorMsg) errorMsg.style.display = 'none';
+    
+    console.log('Calling Supabase signInWithPassword...');
     try {
         const { data, error } = await client.auth.signInWithPassword({
             email: email,
@@ -120,19 +135,29 @@ async function handleLogin(e) {
         });
         
         if (error) {
-            errorMsg.textContent = "E-mail ou senha inválidos. Verifique se a compra foi aprovada.";
-            errorMsg.style.display = 'block';
-            btn.innerHTML = originalBtnText;
-            btn.disabled = false;
+            console.warn('Login error from Supabase:', error.message);
+            if (errorMsg) {
+                errorMsg.textContent = "E-mail ou senha inválidos. Verifique se a compra foi aprovada.";
+                errorMsg.style.display = 'block';
+            }
+            if (btn) {
+                btn.innerHTML = originalBtnText;
+                btn.disabled = false;
+            }
         } else {
+            console.log('Login successful');
             checkAuth();
         }
     } catch (err) {
-        console.error('Login error:', err);
-        errorMsg.textContent = "Ocorreu um erro ao tentar entrar. Tente novamente.";
-        errorMsg.style.display = 'block';
-        btn.innerHTML = originalBtnText;
-        btn.disabled = false;
+        console.error('Caught exception during login:', err);
+        if (errorMsg) {
+            errorMsg.textContent = "Ocorreu um erro ao tentar entrar. Tente novamente.";
+            errorMsg.style.display = 'block';
+        }
+        if (btn) {
+            btn.innerHTML = originalBtnText;
+            btn.disabled = false;
+        }
     }
 }
 
