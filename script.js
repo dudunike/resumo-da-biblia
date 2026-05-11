@@ -168,12 +168,24 @@ async function logout() {
 }
 
 function initLibrary() {
-    // Only init if rows are empty to avoid duplicating on login/logout cycle
+    console.log('Initializing library rows...');
     const container = document.getElementById('rows-container');
-    if (container.innerHTML.trim() !== '') return;
+    if (!container) {
+        console.error('Rows container not found');
+        return;
+    }
     
+    // Check if rows are already present
+    if (container.querySelector('.row')) {
+        console.log('Rows already present, skipping init');
+        return;
+    }
+    
+    // Clear any placeholders or comments
+    container.innerHTML = '';
+
     const hero = document.getElementById('hero-banner');
-    hero.style.backgroundImage = `url('${bannerImg}')`;
+    if (hero) hero.style.backgroundImage = `url('${bannerImg}')`;
     
     const categoryImages = [
         'images/destaques.png',
