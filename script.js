@@ -54,10 +54,27 @@ const bannerImg = "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?
 // Supabase Config
 const supabaseUrl = 'https://knufkvvxbwptoxxlnwpg.supabase.co';
 const supabaseKey = 'sb_publishable_5H-yd3hlXulNY79T285DQw_dcHrnrAJ';
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+let supabase;
+
+function getSupabase() {
+    if (!supabase) {
+        if (window.supabase) {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } else {
+            console.error('Supabase library not loaded yet');
+        }
+    }
+    return supabase;
+}
 
 async function checkAuth() {
-    const { data: { session } } = await supabase.auth.getSession();
+    const client = getSupabase();
+    if (!client) {
+        setTimeout(checkAuth, 500);
+        return;
+    }
+
+    const { data: { session } } = await client.auth.getSession();
     
     const loginContainer = document.getElementById('login-container');
     const appContent = document.getElementById('app-content');
@@ -76,34 +93,52 @@ async function checkAuth() {
 }
 
 async function handleLogin(e) {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    
+    const client = getSupabase();
+    if (!client) {
+        alert('O sistema ainda está carregando. Por favor, aguarde um segundo.');
+        return;
+    }
+
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     const errorMsg = document.getElementById('login-error');
+    const loginForm = document.getElementById('login-form');
     
-    const btn = e.target.querySelector('button');
+    const btn = loginForm.querySelector('button');
+    const originalBtnText = btn.innerHTML;
+    
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
     btn.disabled = true;
     errorMsg.style.display = 'none';
     
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-    });
-    
-    btn.innerHTML = 'Acessar';
-    btn.disabled = false;
-    
-    if (error) {
-        errorMsg.textContent = "E-mail ou senha inválidos. Verifique se a compra foi aprovada.";
+    try {
+        const { data, error } = await client.auth.signInWithPassword({
+            email: email,
+            password: password,
+        });
+        
+        if (error) {
+            errorMsg.textContent = "E-mail ou senha inválidos. Verifique se a compra foi aprovada.";
+            errorMsg.style.display = 'block';
+            btn.innerHTML = originalBtnText;
+            btn.disabled = false;
+        } else {
+            checkAuth();
+        }
+    } catch (err) {
+        console.error('Login error:', err);
+        errorMsg.textContent = "Ocorreu um erro ao tentar entrar. Tente novamente.";
         errorMsg.style.display = 'block';
-    } else {
-        checkAuth();
+        btn.innerHTML = originalBtnText;
+        btn.disabled = false;
     }
 }
 
 async function logout() {
-    await supabase.auth.signOut();
+    const client = getSupabase();
+    if (client) await client.auth.signOut();
     checkAuth();
 }
 
@@ -252,7 +287,17 @@ window.onclick = (event) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Bíblia Flix Script Initialized');
     checkAuth();
-    document.getElementById('login-form').addEventListener('submit', handleLogin);
 });
+
+// Expose to window for HTML onclick handlers
+window.handleLogin = handleLogin;
+window.logout = logout;
+window.showPDF = showPDF;
+window.hidePDF = hidePDF;
+window.openFeatured = openFeatured;
+window.downloadFeatured = downloadFeatured;
+window.openModal = openModal;
+
 
