@@ -1,0 +1,21 @@
+{
+  "name": "Bíblia Flix",
+  "short_name": "Bíblia Flix",
+  "description": "Sua Biblioteca Digital de Estudos Bíblicos",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#141414",
+  "theme_color": "#e50914",
+  "icons": [
+    {
+      "src": "images/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
