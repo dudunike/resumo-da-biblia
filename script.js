@@ -261,6 +261,10 @@ function openModal(title, desc, fileId) {
                     <i class="fas fa-download"></i> Baixar PDF
                 </button>
             </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; border: 1px dashed #444; display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-print" style="color: var(--netflix-red);"></i>
+                <span style="font-size: 0.9rem; color: #bbb;">Dica: Você pode imprimir este estudo e montar seu próprio portfólio físico!</span>
+            </div>
         </div>
         <div id="pdf-viewer-container" style="display: none; width: 100%; height: 600px; border-radius: 8px; overflow: hidden; background: #000;">
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #222;">
